@@ -1,22 +1,25 @@
 package com.example.tech.support.controller;
 
+import com.example.tech.support.model.dto.CreateRequestDto;
+import com.example.tech.support.model.dto.RequestDto;
+import com.example.tech.support.service.RequestService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/request-processing")
 public class RequestController {
-    @PostMapping()
-    public void createRequest(){
+    private final RequestService requestService;
 
+    @PostMapping
+    public ResponseEntity<RequestDto> createRequest(@RequestBody CreateRequestDto dto) {
+        return ResponseEntity.ok(requestService.createRequest(dto));
     }
 
-    @GetMapping()
-    public void getRequest(){
-
+    @GetMapping("/{userId}")
+    public ResponseEntity<RequestDto> getRequests(@PathVariable Long userId){
+        return ResponseEntity.ok(requestService.getRequestsById(userId));
     }
 }
