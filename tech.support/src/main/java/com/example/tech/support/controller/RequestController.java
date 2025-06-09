@@ -20,8 +20,14 @@ public class RequestController {
         return ResponseEntity.ok(requestService.createRequest(dto));
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/get-by-id/{userId}")
     public ResponseEntity<List<RequestDto>> getRequests(@PathVariable String userId){
         return ResponseEntity.ok(requestService.getRequestsByUserId(userId));
     }
+
+    @GetMapping("/get-by-status/{statusId}")
+    public ResponseEntity<List<RequestDto>> getRequestsByStatusId(@PathVariable int statusId) {
+        return ResponseEntity.ok(requestService.getRequestsByStatusId(statusId));
+    }
+
 }

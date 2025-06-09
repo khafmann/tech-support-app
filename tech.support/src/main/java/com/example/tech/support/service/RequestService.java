@@ -33,11 +33,23 @@ public class RequestService {
     public List<RequestDto> getRequestsByUserId(String userId) {
         List<Request> requests = requestRepository.findAllByUserId(userId);
         if (requests.isEmpty()) {
-            throw new EntityNotFoundException("No requests found for userId " + userId);
+            throw new EntityNotFoundException("Под этим пользователем записи не найдены: userId = " + userId);
         }
         return requests.stream()
                 .map(requestMapper::toDto)
                 .toList();
     }
+
+    public List<RequestDto> getRequestsByStatusId(int statusId) {
+        RequestStatus status = RequestStatus.fromId(statusId);
+        List<Request> requests = requestRepository.findAllByStatus(status);
+        if (requests.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+        return requests.stream()
+                .map(requestMapper::toDto)
+                .toList();
+    }
+
 
 }
