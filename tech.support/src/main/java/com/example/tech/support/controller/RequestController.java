@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/request-processing")
@@ -19,7 +21,7 @@ public class RequestController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<RequestDto> getRequests(@PathVariable Long userId){
-        return ResponseEntity.ok(requestService.getRequestsById(userId));
+    public ResponseEntity<List<RequestDto>> getRequests(@PathVariable String userId){
+        return ResponseEntity.ok(requestService.getRequestsByUserId(userId));
     }
 }

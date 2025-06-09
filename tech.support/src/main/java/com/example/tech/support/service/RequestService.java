@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +30,14 @@ public class RequestService {
         return requestMapper.toDto(savedRequest);
     }
 
-    public RequestDto getRequestsById(Long userId){
-        Request request = requestRepository
-                .findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Request with id " + userId + " not found"));
-        return requestMapper.toDto(request);
+    public List<RequestDto> getRequestsByUserId(String userId) {
+        List<Request> requests = requestRepository.findAllByUserId(userId);
+        if (requests.isEmpty()) {
+            throw new EntityNotFoundException("No requests found for userId " + userId);
+        }
+        return requests.stream()
+                .map(requestMapper::toDto)
+                .toList();
     }
+
 }
