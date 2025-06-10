@@ -1,0 +1,29 @@
+services:
+  # Backend
+  tech-support-app:
+    build: ./tech.support
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/request-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123456
+
+  # Database
+  postgres_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: request-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+
+volumes:
+  postgres_db:
