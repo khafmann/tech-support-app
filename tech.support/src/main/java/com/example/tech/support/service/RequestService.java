@@ -19,6 +19,7 @@ import java.util.List;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final RequestMapper requestMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public RequestDto createRequest(CreateRequestDto dto) {
@@ -32,14 +33,13 @@ public class RequestService {
 
     public RequestDto updateRequest(Long id, RequestStatus newStatus, String newDescription) {
         Request request = requestRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Заявка не найдена: id = " + id));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Заявка не найдена: id = %d", id)));
 
         RequestStatus currentStatus = request.getStatus();
         if (newStatus.ordinal() <= currentStatus.ordinal()) {
             throw new IllegalArgumentException(String.format(
                     "Нельзя изменить статус на более ранний или тот же: текущий = %s, новый = %s",
-                    currentStatus.name(), newStatus.name()
-            ));
+                    currentStatus.name(), newStatus.name()));
         }
 
         request.setStatus(newStatus);
@@ -47,14 +47,16 @@ public class RequestService {
         request.setLastUpdated(LocalDateTime.now());
 
         Request updatedRequest = requestRepository.save(request);
-
+        notificationService.handleStatusChange(updatedRequest);
         return requestMapper.toDto(updatedRequest);
     }
 
     public List<RequestDto> getRequestsByUserId(String userId) {
         List<Request> requests = requestRepository.findAllByUserId(userId);
         if (requests.isEmpty()) {
-            throw new EntityNotFoundException("Под этим пользователем записи не найдены: userId = " + userId);
+            throw new EntityNotFoundException(
+                    String.format("Под этим пользователем записи не найдены: userId = %s", userId)
+            );
         }
         return requests.stream()
                 .map(requestMapper::toDto)
@@ -65,7 +67,7 @@ public class RequestService {
         RequestStatus status = RequestStatus.fromId(statusId);
         List<Request> requests = requestRepository.findAllByStatus(status);
         if (requests.isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException(String.format("Заявки со статусом %s не найдены", status.name()));
         }
         return requests.stream()
                 .map(requestMapper::toDto)

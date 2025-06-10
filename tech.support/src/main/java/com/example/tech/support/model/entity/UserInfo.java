@@ -16,5 +16,6 @@ public class UserInfo {
     private Long id;
     private String surname;
     private String name;
+    private String email;
     private LocalDateTime createdAt;
 }
