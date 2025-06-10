@@ -21,13 +21,34 @@ public class RequestService {
     private final RequestMapper requestMapper;
 
     @Transactional
-    public RequestDto createRequest(CreateRequestDto dto){
+    public RequestDto createRequest(CreateRequestDto dto) {
         Request request = requestMapper.toEntity(dto);
         request.setStatus(RequestStatus.ACCEPTED); // Сразу присваиваем статус "принят" т.к. запись идет в БД
         request.setCreatedAt(LocalDateTime.now());
 
         Request savedRequest = requestRepository.save(request);
         return requestMapper.toDto(savedRequest);
+    }
+
+    public RequestDto updateRequest(Long id, RequestStatus newStatus, String newDescription) {
+        Request request = requestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Заявка не найдена: id = " + id));
+
+        RequestStatus currentStatus = request.getStatus();
+        if (newStatus.ordinal() <= currentStatus.ordinal()) {
+            throw new IllegalArgumentException(String.format(
+                    "Нельзя изменить статус на более ранний или тот же: текущий = %s, новый = %s",
+                    currentStatus.name(), newStatus.name()
+            ));
+        }
+
+        request.setStatus(newStatus);
+        request.setDescription(newDescription);
+        request.setLastUpdated(LocalDateTime.now());
+
+        Request updatedRequest = requestRepository.save(request);
+
+        return requestMapper.toDto(updatedRequest);
     }
 
     public List<RequestDto> getRequestsByUserId(String userId) {
@@ -50,6 +71,4 @@ public class RequestService {
                 .map(requestMapper::toDto)
                 .toList();
     }
-
-
 }
