@@ -16,6 +16,6 @@ public class UserInfo {
     private Long id;
     private String surname;
     private String name;
-    private String email;
+    private String email; // Тут можно дополнительно реализовать проверку на корректность email
     private LocalDateTime createdAt;
 }
