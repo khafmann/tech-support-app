@@ -1,5 +1,11 @@
 # tech-support-app
 
+### Стэк:
+- Java 21
+- Spring 3.5.0
+- Maven 3.9.9
+- PostgreSQL 16
+
 ---
 
 ### Что реализовано в данной версии сервиса:
