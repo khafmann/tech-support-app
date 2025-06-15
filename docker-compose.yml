@@ -8,7 +8,7 @@ services:
     depends_on:
       - postgres_db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/request-db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/request-db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123456
 
@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_db:/var/lib/postgresql/data
 
