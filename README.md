@@ -31,7 +31,7 @@
 
 ### 4. Создаем заявку: 
 - POST ``localhost:8080/api/request-processing``
-В теле цикла: 
+В теле запроса: 
 ```JSON
 {
   "userId": 1
@@ -44,7 +44,7 @@
 
 ### 6. Изменение статуса и описания:
 - PATCH `localhost:8080/api/request-processing/change-status/{request-id}`
-В теле цикла:
+В теле запроса:
 ```JSON
 {
   "statusId": 2,
